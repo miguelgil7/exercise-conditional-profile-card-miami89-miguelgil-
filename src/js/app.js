@@ -23,27 +23,51 @@ import "../style/index.css";
     }
  */
 function render(variables = {}) {
-  console.log("These are the current variables: ", variables); // print on the console
-  // here we ask the logical questions to make decisions on how to build the html
-  // if includeCover==false then we reset the cover code without the <img> tag to make the cover transparent.
-  let cover = `<div class="cover"><img src="${variables.background}" /></div>`;
-  if (variables.includeCover == false) cover = "<div class='cover'></div>";
+  console.log("These are the current variables: ", variables);
 
-  // reset the website body with the new html output
-  document.querySelector("#widget_content").innerHTML = `<div class="widget">
-            ${cover}
-          <img src="${variables.avatarURL}" class="photo" />
-          <h1>Lucy Boilett</h1>
-          <h2>Web Developer</h2>
-          <h3>Miami, USA</h3>
-          <ul class="position-right">
-            <li><a href="https://twitter.com/4geeksacademy"><i class="fab fa-twitter"></i></a></li>
-            <li><a href="https://github.com/4geeksacademy"><i class="fab fa-github"></i></a></li>
-            <li><a href="https://linkedin.com/school/4geeksacademy"><i class="fab fa-linkedin"></i></a></li>
-            <li><a href="https://instagram.com/4geeksacademy"><i class="fab fa-instagram"></i></a></li>
-          </ul>
-        </div>
-    `;
+  // COVER
+  let cover = `<div class="cover"><img src="${variables.background}" /></div>`;
+  if (variables.includeCover === false) cover = `<div class="cover"></div>`;
+
+  // TEXT
+  const fullName = `${variables.name || ""} ${variables.lastName || ""}`.trim();
+  const role = variables.role || "";
+  const location = [variables.city, variables.country]
+    .filter(Boolean)
+    .join(", ");
+
+  // SOCIAL ITEMS (solo si hay username)
+  const twitterHTML = variables.twitter
+    ? `<li><a href="https://twitter.com/${variables.twitter}"><i class="fab fa-twitter"></i></a></li>`
+    : "";
+
+  const githubHTML = variables.github
+    ? `<li><a href="https://github.com/${variables.github}"><i class="fab fa-github"></i></a></li>`
+    : "";
+
+  const linkedinHTML = variables.linkedin
+    ? `<li><a href="https://linkedin.com/${variables.linkedin}"><i class="fab fa-linkedin"></i></a></li>`
+    : "";
+
+  const instagramHTML = variables.instagram
+    ? `<li><a href="https://instagram.com/${variables.instagram}"><i class="fab fa-instagram"></i></a></li>`
+    : "";
+
+  const socialItems = `${twitterHTML}${githubHTML}${linkedinHTML}${instagramHTML}`;
+
+  // IMPORTANTE: renderizar SIEMPRE el UL para que el cambio left/right se vea
+  const socialHTML = `<ul class="${variables.socialMediaPosition}">${socialItems}</ul>`;
+
+  document.querySelector("#widget_content").innerHTML = `
+    <div class="widget">
+      ${cover}
+      <img src="${variables.avatarURL}" class="photo" />
+      <h1>${fullName}</h1>
+      <h2>${role}</h2>
+      <h3>${location}</h3>
+      ${socialHTML}
+    </div>
+  `;
 }
 
 /**
